@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import {useState} from "react";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import UserContext from "./context/UserContext";
+import {Container} from "react-bootstrap";
+import LoginForm from "./components/Login";
+import RegisterForm from "./components/Register";
+import BookNavbar from "./components/BookNavbar";
+import BooksRow from "./components/BooksRow";
+import SearchResults from "./components/SearchResults";
+import DisplayDb from "./components/DisplayDb";
+import UserProfile from "./components/UserProfile";
+import "./App.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [user, setUser] = useState({username: "", isAuthenticated: false});
+    console.log("from app.js", user);
+    return (
+        <UserContext.Provider value={user}>
+            <Router>
+                <BookNavbar />
+                <Container>
+                    <Routes>
+                        <Route path="/" element={<RegisterForm />} />
+                        <Route
+                            path="/login"
+                            element={<LoginForm setUser={setUser} />}
+                        />
+                        <Route
+                            path="/bestsellers/:nytList"
+                            element={<BooksRow />}
+                        />
+                        <Route
+                            path="/search/:searchTerm"
+                            element={<SearchResults />}
+                        />
+                        <Route
+                            path="/db/:displayField"
+                            element={<DisplayDb />}
+                        />
+                        <Route
+                            path="/userprofile"
+                            element={<UserProfile setUser={setUser} />}
+                        />
+                    </Routes>
+                </Container>
+            </Router>
+        </UserContext.Provider>
+    );
 }
 
 export default App;
